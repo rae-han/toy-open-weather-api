@@ -1,12 +1,14 @@
 /* eslint-disable */
 import {ChangeEventHandler, FormEventHandler, useEffect, useState} from "react";
-import axios from "axios";
+import axios, {AxiosResponse} from "axios";
+import {Result} from "../typings/db.ts";
 
 const Todo = () => {
   const [input, setInput] = useState('')
   const [todos, setTodos] = useState<{ text: string, checked: boolean }[]>(() => JSON.parse(localStorage.getItem('todos') || '[]'))
   const [city, setCity] = useState('서울')
-  const [Temperatures, setTemperatures] = useState(27)
+  const [weather, setWeather] = useState('')
+  const [temp, setTemp] = useState(27)
 
   const onSubmit: FormEventHandler = (e) => {
     e.preventDefault();
@@ -43,12 +45,14 @@ const Todo = () => {
 
     try {
       const API_KEY = `92cbd20cf31d4cba5384537c6d9f36f2`
-      const res = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`);
+      const res: AxiosResponse<Result> = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`);
       console.log(res)
-      // const name = res.name;
-      // const weather = res.weather[0].main;
-      setCity('서울')
-      setTemperatures(27)
+      const name = res.data.name;
+      const weather = res.data.weather[0].main;
+      const temp = res.data.main.temp;
+      setCity(name)
+      setWeather(weather)
+      setTemp(temp)
     } catch (e) {
       console.error(e)
     }
@@ -83,8 +87,8 @@ const Todo = () => {
           <button onClick={() => onRemove(idx)}>삭제</button>
         </li>)}
       </ul>
-      <h2>{city} 현재 온도: {Temperatures}</h2>
-      <p>api 호출이 잘 안돼서 임시로 값을 넣어놨습니다ㅠㅠ</p>
+      <h2>{city} 현재 날씨: {weather}</h2>
+      <h2>{city} 현재 온도: {temp}</h2>
     </div>
   );
 };
