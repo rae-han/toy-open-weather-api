@@ -84,6 +84,7 @@ const Todo = () => {
         </li>)}
       </ul>
       <h2>{city} 현재 온도: {Temperatures}</h2>
+      <p>api 호출이 잘 안돼서 임시로 값을 넣어놨습니다ㅠㅠ</p>
     </div>
   );
 };
